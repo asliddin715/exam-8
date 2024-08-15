@@ -10,6 +10,7 @@ const Country = ({ countryCode }) => {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
     const itemsPerPage = 10;
@@ -56,7 +57,18 @@ const Country = ({ countryCode }) => {
     const handleDrawerOpen = () => setIsOpen(true);
     const handleDrawerClose = () => setIsOpen(false);
 
-    const currentItems = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const handleSearchChange = (e) => setSearchTerm(e.target.value);
+
+    const handleRemove = (cryptoId) => {
+        setSelectedRows((prev) => prev.filter((row) => row.id !== cryptoId));
+    };
+
+    const filteredItems = data.filter((crypto) =>
+        crypto.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        crypto.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const currentItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -73,6 +85,8 @@ const Country = ({ countryCode }) => {
                     type="text"
                     placeholder="Search For a Crypto Currency.."
                     className="w-[1280px] p-3 outline-[#515151] border-[#515151] bg-[#16171A] m-auto mb-5 text-white hover:outline-none"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                 />
             </div>
             <div className="w-[1280px] m-auto">
@@ -121,7 +135,7 @@ const Country = ({ countryCode }) => {
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell className="text-center ">
-                                        <h3>${crypto.current_price}</h3>
+                                        <h3>${crypto.current_price.toLocaleString()}</h3>
                                     </Table.Cell>
                                     <Table.Cell className={`text-center ${changeClass}`}>
                                         <div className="flex gap-2 justify-center">
@@ -149,7 +163,7 @@ const Country = ({ countryCode }) => {
             <div className="m-auto flex justify-center mb-10 mt-5">
                 <Pagination
                     currentPage={currentPage}
-                    totalPages={Math.ceil(data.length / itemsPerPage)}
+                    totalPages={Math.ceil(filteredItems.length / itemsPerPage)}
                     onPageChange={onPageChange}
                     className="bg-black text-white"
                     renderPaginationButton={(props) => (
@@ -182,7 +196,10 @@ const Country = ({ countryCode }) => {
                             >
                                 <img className="w-[110px]" src={crypto.image} alt={crypto.name} />
                                 <h4 className="mt-3 text-[20px] text-white">${crypto.market_cap.toLocaleString()}</h4>
-                                <button className="bg-[#FF0000] px-5 py-1 rounded- text-white">
+                                <button
+                                    className="bg-[#FF0000] px-5 py-1 rounded- text-white"
+                                    onClick={() => handleRemove(crypto.id)}
+                                >
                                     Remove
                                 </button>
                             </div>

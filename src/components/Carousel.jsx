@@ -39,7 +39,7 @@ const Carusel = ({ countries }) => {
                                             {item.price_change_percentage_24h.toFixed(2)}%
                                         </h3>
                                     </div>
-                                    <h3 className='text-white text-[21px]'>${item.current_price}</h3>
+                                    <h3 className='text-white text-[21px]'>${item.current_price.toLocaleString()}</h3>
                                 </div>
                             ))}
                         </div>
