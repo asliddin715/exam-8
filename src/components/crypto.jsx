@@ -5,7 +5,7 @@ import { Button } from "flowbite-react";
 
 import LineChart from "./LineChart";
 const CryptoDetail = () => {
-    const { cryptoId } = useParams(); // Get the cryptoId from the route parameters
+    const { cryptoId } = useParams(); 
     const [crypto, setCrypto] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
